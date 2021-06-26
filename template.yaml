@@ -1,0 +1,82 @@
+
+AWSTemplateFormatVersion : '2010-09-09'
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Description: Lambda CloudFormation Lab
+Resources:
+  GetPets:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getPets
+      Handler: pet.getPets
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MyTable
+      # Role: !GetAtt MyLambdaRole.Arn
+      Environment:
+        Variables:
+          ADOPTION_TABLE: !Ref MyTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/pets"
+            Method: GET
+  PutPet:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: updatePet
+      Handler: pet.updatePet
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyTable
+      Environment:
+        Variables:
+          ADOPTION_TABLE: !Ref MyTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/pets/{petId}"
+            Method: PUT
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: husky-api
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: swagger.yaml
+  
+  TheBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-pets
+
+
+  MyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: animal-adoption-table
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S

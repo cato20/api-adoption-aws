@@ -1,0 +1,46 @@
+openapi: 3.0.0
+
+paths:
+  /pets:
+    get:
+      summary: This endpoint return a list of pets in adoptions.
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getPets/invocations"
+        httpMethod: "POST"
+  /pets/{petId}      
+    put:
+      summary: This endpoint is for updating a pet in db
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                healt_status:
+                  type: string
+                age:
+                  type: string
+                location:
+                  type: string
+                pictures:
+                  type: array
+                  properties:
+                    items:
+                      type: string
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: Pet unique id.
+          schema:
+            type : integer
+            format: int64
+            minimum: 1
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:updatePet/invocations"
+        httpMethod: "POST"
