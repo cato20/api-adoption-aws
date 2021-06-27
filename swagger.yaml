@@ -9,7 +9,7 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getPets/invocations"
         httpMethod: "POST"
-  /pets/{petId}      
+  /pets/{petId}:
     put:
       summary: This endpoint is for updating a pet in db
       requestBody:

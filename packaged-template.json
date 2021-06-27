@@ -1,7 +1,6 @@
-AWSTemplateFormatVersion : '2010-09-09'
+AWSTemplateFormatVersion: '2010-09-09'
 Transform:
-  - AWS::Serverless-2016-10-31
-
+- AWS::Serverless-2016-10-31
 Description: Adoption CloudFormation project
 Resources:
   GetPets:
@@ -10,20 +9,22 @@ Resources:
       FunctionName: getPets
       Handler: pet.getPets
       Runtime: python3.6
-      CodeUri: package/
+      CodeUri: s3://deploy-carlos/c4bbb46b53d030592ed67fef55f2da18
       Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref MyTable
-      # Role: !GetAtt MyLambdaRole.Arn
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MyTable
       Environment:
         Variables:
-          ADOPTION_TABLE: !Ref MyTable
+          ADOPTION_TABLE:
+            Ref: MyTable
       Events:
         GetUsers:
           Type: Api
           Properties:
-            RestApiId: !Ref MyAPI
-            Path: "/pets"
+            RestApiId:
+              Ref: MyAPI
+            Path: /pets
             Method: GET
   PutPet:
     Type: AWS::Serverless::Function
@@ -31,21 +32,23 @@ Resources:
       FunctionName: updatePet
       Handler: pet.updatePet
       Runtime: python3.6
-      CodeUri: package/
+      CodeUri: s3://deploy-carlos/c4bbb46b53d030592ed67fef55f2da18
       Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref MyTable
+      - DynamoDBWritePolicy:
+          TableName:
+            Ref: MyTable
       Environment:
         Variables:
-          ADOPTION_TABLE: !Ref MyTable
+          ADOPTION_TABLE:
+            Ref: MyTable
       Events:
         GetUsers:
           Type: Api
           Properties:
-            RestApiId: !Ref MyAPI
-            Path: "/pets/{petId}"
+            RestApiId:
+              Ref: MyAPI
+            Path: /pets/{petId}
             Method: PUT
-
   MyAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -55,8 +58,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: swagger.yaml
-
+            Location: s3://deploy-carlos/50b735e521fd037f0716690a483c8391
   MyTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -65,12 +67,12 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
       KeySchema:
-        - AttributeName: pk
-          KeyType: HASH
-        - AttributeName: sk
-          KeyType: RANGE
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
       AttributeDefinitions:
-        - AttributeName: pk
-          AttributeType: S
-        - AttributeName: sk
-          AttributeType: S
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
