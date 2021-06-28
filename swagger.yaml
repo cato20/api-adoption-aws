@@ -39,6 +39,12 @@ paths:
             type : integer
             format: int64
             minimum: 1
+        - name: type
+          in: query
+          required: true
+          description: Pet type
+          schema:
+            type: string
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:

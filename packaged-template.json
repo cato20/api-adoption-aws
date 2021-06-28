@@ -9,7 +9,7 @@ Resources:
       FunctionName: getPets
       Handler: pet.getPets
       Runtime: python3.6
-      CodeUri: s3://deploy-carlos/c4bbb46b53d030592ed67fef55f2da18
+      CodeUri: s3://deploy-carlos/81ca37676c6f0a825ba3623dfae137f3
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -32,7 +32,7 @@ Resources:
       FunctionName: updatePet
       Handler: pet.updatePet
       Runtime: python3.6
-      CodeUri: s3://deploy-carlos/c4bbb46b53d030592ed67fef55f2da18
+      CodeUri: s3://deploy-carlos/81ca37676c6f0a825ba3623dfae137f3
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -58,7 +58,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://deploy-carlos/50b735e521fd037f0716690a483c8391
+            Location: s3://deploy-carlos/9c03686e509405d2765683ff37591a65
   MyTable:
     Type: AWS::DynamoDB::Table
     Properties:
